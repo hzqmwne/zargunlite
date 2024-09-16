@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zargunlite"
+authors = [
+    {name = "hzqmwne", email = "huangzhengqmwne@sina.cn"},
+]
+dependencies = [
+]
+dynamic = ["version"]
+
+
+[tool.setuptools_scm]
+write_to = "src/zargunlite/_version.py"
