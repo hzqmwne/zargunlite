@@ -27,3 +27,21 @@ class ZircoliteRuleMatchResult:
     tags: list[str]
     count: int
     matches: list[dict[str, Any]]
+
+
+# ---
+
+
+@dataclasses.dataclass(slots=True, kw_only=True)
+class ZircoliteFieldMappingSplitConfig:
+    separator: str
+    equal: str
+
+
+@dataclasses.dataclass(slots=True, kw_only=True)
+class ZircoliteFieldMappingConfig:
+    exclusions: list[str]
+    useless: list[Any]
+    mappings: dict[str, str]
+    alias: dict[str, str]
+    split: dict[str, ZircoliteFieldMappingSplitConfig]
