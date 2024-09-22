@@ -55,18 +55,15 @@ class ZargunCore:
         data: Collection[Mapping[str, Any]] | Iterable[Mapping[str, Any]],
         *,
         fields: Collection[tuple[str, type[type]]] | None = None,
-        # field_aliases: Mapping[str, str] | None = None,
     ) -> None:
         if not fields:
+            assert isinstance(data, Collection)
             field_map: dict[str, type[type]] = {}
             for d in data:  # assert data is Collection because we need extra iter on it to extract fields
-                field_map.update({k.lower(): type(v) for k, v in d.items()})
+                field_map.update({k: type(v) for k, v in d.items()})
         else:
             # here, data can be any iterable object
-            field_map = {k.lower(): t for k, t in fields}
-        # if field_aliases:
-        #     for alias, raw in field_aliases.items():
-        #         field_map[alias.lower()] = field_map[raw.lower()]
+            field_map = {k: t for k, t in fields}
 
         field_define_list: list[str] = []
         for field_name, field_type in field_map.items():
@@ -84,7 +81,7 @@ class ZargunCore:
             value_define_list = []
             for k, v in d.items():
                 # FIXME: escape
-                column_define = f"'{k.lower()}'"
+                column_define = f"'{k}'"
                 value_define = "'{}'".format(str(v).replace("'", "''"))
                 column_define_list.append(column_define)
                 value_define_list.append(value_define)
