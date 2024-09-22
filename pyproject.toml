@@ -4,13 +4,28 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zargunlite"
-authors = [
-    {name = "hzqmwne", email = "huangzhengqmwne@sina.cn"},
-]
-dependencies = [
-]
+authors = [{ name = "hzqmwne", email = "huangzhengqmwne@sina.cn" }]
+dependencies = []
 dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = ["flake8", "Flake8-pyproject", "black", "isort", "mypy>=1.11", "pytest"]
 
 
 [tool.setuptools_scm]
 write_to = "src/zargunlite/_version.py"
+
+
+[tool.flake8]
+max-line-length = 120
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.mypy]
+strict = true
+enable_incomplete_feature = ["NewGenericSyntax"]
