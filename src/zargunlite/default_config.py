@@ -2,7 +2,7 @@ from typing import Any, Final
 
 from zargunlite.model import ZircoliteFieldMappingConfig, ZircoliteFieldMappingSplitConfig
 
-default_field_mapping_config_data: Final[dict[str, Any]] = {
+_default_field_mapping_config_data: Final[dict[str, Any]] = {
     "exclusions": ["xmlns"],
     "useless": [None, ""],
     "mappings": {
@@ -271,13 +271,15 @@ default_field_mapping_config_data: Final[dict[str, Any]] = {
     },
 }
 
-default_field_mapping_config: Final = ZircoliteFieldMappingConfig(
-    exclusions=default_field_mapping_config_data["exclusions"],
-    useless=default_field_mapping_config_data["useless"],
-    mappings=default_field_mapping_config_data["mappings"],
-    alias=default_field_mapping_config_data["alias"],
+DEFAULT_FIELD_MAPPING_CONFIG: Final = ZircoliteFieldMappingConfig(
+    exclusions=_default_field_mapping_config_data["exclusions"],
+    useless=_default_field_mapping_config_data["useless"],
+    mappings=_default_field_mapping_config_data["mappings"],
+    alias=_default_field_mapping_config_data["alias"],
     split={
         k: ZircoliteFieldMappingSplitConfig(separator=v["separator"], equal=v["equal"])
-        for k, v in default_field_mapping_config_data["split"].items()
+        for k, v in _default_field_mapping_config_data["split"].items()
     },
 )
+
+EMPTY_FIELD_MAPPING_CONFIG: Final = ZircoliteFieldMappingConfig()

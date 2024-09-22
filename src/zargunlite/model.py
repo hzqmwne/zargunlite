@@ -1,5 +1,15 @@
 import dataclasses
-from typing import Any
+from collections.abc import Mapping, Sequence
+from typing import Any, TypeAlias
+
+JSONLiteralType: TypeAlias = str | int | float | bool | None
+JSONType: TypeAlias = dict[str, "JSONType"] | list["JSONType"] | JSONLiteralType
+JSONTypeRO: TypeAlias = Mapping[str, "JSONTypeRO"] | Sequence["JSONTypeRO"] | JSONLiteralType
+
+# TODO: when increase python require to >=3.12, we can use the PEP 695 type alias syntax:
+# type JSONLiteralType = str | int | float | bool | None
+# type JSONType = dict[str, JSONType] | list[JSONType] | JSONLiteralType
+# type JSONTypeRO = Mapping[str, "JSONTypeRO"] | Sequence["JSONTypeRO"] | JSONLiteralType
 
 
 @dataclasses.dataclass(slots=True, kw_only=True)
@@ -40,8 +50,8 @@ class ZircoliteFieldMappingSplitConfig:
 
 @dataclasses.dataclass(slots=True, kw_only=True)
 class ZircoliteFieldMappingConfig:
-    exclusions: list[str]
-    useless: list[Any]
-    mappings: dict[str, str]
-    alias: dict[str, str]
-    split: dict[str, ZircoliteFieldMappingSplitConfig]
+    exclusions: list[str] = dataclasses.field(default_factory=list)
+    useless: list[Any] = dataclasses.field(default_factory=list)
+    mappings: dict[str, str] = dataclasses.field(default_factory=dict)
+    alias: dict[str, str] = dataclasses.field(default_factory=dict)
+    split: dict[str, ZircoliteFieldMappingSplitConfig] = dataclasses.field(default_factory=dict)
