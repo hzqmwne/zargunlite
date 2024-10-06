@@ -44,11 +44,26 @@ class ZargunCore:
             r = cursor.execute(sql, params)
             return r.fetchall()
 
-    def _create_db(self, field_defs: list[tuple[str, str]]) -> None:
+    def _create_table(self, field_defs: list[tuple[str, str]]) -> None:
         # FIXME: escape field
         fields_part = ", ".join(f"'{field}' {typ}" for field, typ in field_defs) + ", "
         stmt = f"CREATE TABLE logs ( row_id INTEGER, {fields_part} PRIMARY KEY(row_id AUTOINCREMENT) );"
         self._execute_sql(stmt)
+
+    def _insert_data_row(self, d: Mapping[str, Any]) -> None:
+        column_define_list = []
+        value_define_list = []
+        for k, v in d.items():
+            # FIXME: escape
+            column_define = f"'{k}'"
+            value_define = "'{}'".format(str(v).replace("'", "''"))
+            column_define_list.append(column_define)
+            value_define_list.append(value_define)
+
+        columns_define = ", ".join(column_define_list)
+        values_define = ", ".join(value_define_list)
+        insert_stmt = f"INSERT INTO logs ({columns_define}) VALUES ({values_define});"
+        self._execute_sql(insert_stmt)
 
     def load_data(
         self,
@@ -71,22 +86,10 @@ class ZargunCore:
             # FIXME: escape
             field_define = (field_name, sql_type_define)
             field_define_list.append(field_define)
-        self._create_db(field_define_list)
+        self._create_table(field_define_list)
 
         for d in data:
-            column_define_list = []
-            value_define_list = []
-            for k, v in d.items():
-                # FIXME: escape
-                column_define = f"'{k}'"
-                value_define = "'{}'".format(str(v).replace("'", "''"))
-                column_define_list.append(column_define)
-                value_define_list.append(value_define)
-
-            columns_define = ", ".join(column_define_list)
-            values_define = ", ".join(value_define_list)
-            insert_stmt = f"INSERT INTO logs ({columns_define}) VALUES ({values_define});"
-            self._execute_sql(insert_stmt)
+            self._insert_data_row(d)
 
     def create_index(self, field: str) -> None:
         # FIXME: escape field
