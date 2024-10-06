@@ -46,7 +46,7 @@ class ZargunCore:
 
     def _create_db(self, field_defs: list[tuple[str, str]]) -> None:
         # FIXME: escape field
-        fields_part = ", ".join(f"'{field}' {typ}" for field, typ in field_defs)
+        fields_part = ", ".join(f"'{field}' {typ}" for field, typ in field_defs) + ", "
         stmt = f"CREATE TABLE logs ( row_id INTEGER, {fields_part} PRIMARY KEY(row_id AUTOINCREMENT) );"
         self._execute_sql(stmt)
 
@@ -65,16 +65,13 @@ class ZargunCore:
             # here, data can be any iterable object
             field_map = {k: t for k, t in fields}
 
-        field_define_list: list[str] = []
+        field_define_list: list[tuple[str, str]] = []
         for field_name, field_type in field_map.items():
             sql_type_define = "INTEGER" if issubclass(field_type, int) else "TEXT COLLATE NOCASE"
             # FIXME: escape
-            field_define = f"'{field_name}' {sql_type_define}"
+            field_define = (field_name, sql_type_define)
             field_define_list.append(field_define)
-
-        fields_define = ", ".join(field_define_list)
-        create_table_stmt = f"CREATE TABLE logs ( row_id INTEGER, {fields_define} PRIMARY KEY(row_id AUTOINCREMENT) );"
-        self._execute_sql(create_table_stmt)
+        self._create_db(field_define_list)
 
         for d in data:
             column_define_list = []
