@@ -69,11 +69,11 @@ class ZargunCore:
         self,
         data: Collection[Mapping[str, Any]] | Iterable[Mapping[str, Any]],
         *,
-        fields: Collection[tuple[str, type[type]]] | None = None,
+        fields: Collection[tuple[str, type]] | None = None,
     ) -> None:
         if not fields:
             assert isinstance(data, Collection)
-            field_map: dict[str, type[type]] = {}
+            field_map: dict[str, type] = {}
             for d in data:  # assert data is Collection because we need extra iter on it to extract fields
                 field_map.update({k: type(v) for k, v in d.items()})
         else:
