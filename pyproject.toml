@@ -5,6 +5,20 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "zargunlite"
 authors = [{ name = "hzqmwne", email = "huangzhengqmwne@sina.cn" }]
+description = "a sigma rule detection engine based on sqlite"
+urls = {Homepage = "https://github.com/hzqmwne/"}
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">= 3.10"
+classifiers = [
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Typing :: Typed",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = []
 dynamic = ["version"]
 
