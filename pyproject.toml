@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "zargunlite"
 authors = [{ name = "hzqmwne", email = "huangzhengqmwne@sina.cn" }]
 description = "a sigma rule detection engine based on sqlite"
-urls = {Homepage = "https://github.com/hzqmwne/"}
+urls = {Homepage = "https://github.com/hzqmwne/zargunlite"}
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">= 3.10"
