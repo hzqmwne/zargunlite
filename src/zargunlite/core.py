@@ -8,10 +8,10 @@ from typing import Any
 from zargunlite.model import ZircoliteRule, ZircoliteRuleMatchResult
 
 
-def sqlite_udf_regexp(x: str, y: str | None) -> int:
+def sqlite_udf_regexp(x: str, y: object | None) -> int:
     if y is None:
         return 0
-    if re.search(x, y):
+    if re.search(x, str(y)):
         return 1
     else:
         return 0
