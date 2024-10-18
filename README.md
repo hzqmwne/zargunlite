@@ -13,10 +13,10 @@ Install [zargunlite](https://pypi.org/project/zargunlite/ ) from PyPI (requires 
 pip3 install zargunlite
 ```
 
-See `tests/test_core.py` for some usage sample.  
+See `tests/test_core.py` for some usage samples.  
 
 Notice this project will continuously be in a very early state until version 1.0.0 release.  
-Currently it is mainly for personal use because [Zircolite](https://github.com/wagga40/Zircolite ) does not has a PyPI package. There is also an [issue](https://github.com/wagga40/Zircolite/issues/87 ) raised by other user and fortunately the author is working on it.  
+Currently it is mainly for personal use because [Zircolite](https://github.com/wagga40/Zircolite ) does not have a PyPI package. There is also an [issue](https://github.com/wagga40/Zircolite/issues/87 ) raised by other user and fortunately the author is working on it.  
 This project plans to add more features supported by [Zircolite](https://github.com/wagga40/Zircolite ) while keeps easy to be integrated as a library.  
 
 ## License
