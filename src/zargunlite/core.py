@@ -80,8 +80,15 @@ class ZargunCore:
             # here, data can be any iterable object
             field_map = {k: t for k, t in fields}
 
+        field_name_lower_seens: set[str] = set()
         field_define_list: list[tuple[str, str]] = []
         for field_name, field_type in field_map.items():
+            field_name_lower = field_name.lower()
+            if field_name_lower in field_name_lower_seens:
+                # sqlite is case insensitive, so must drop duplicate one
+                continue
+            field_name_lower_seens.add(field_name_lower)
+
             sql_type_define = "INTEGER" if issubclass(field_type, int) else "TEXT COLLATE NOCASE"
             # FIXME: escape
             field_define = (field_name, sql_type_define)
