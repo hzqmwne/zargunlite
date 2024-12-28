@@ -1,5 +1,4 @@
 from collections.abc import Generator
-from contextlib import closing
 
 import pytest
 
@@ -9,7 +8,7 @@ from zargunlite.model import ZircoliteRule, ZircoliteRuleMatchResult
 
 @pytest.fixture
 def zargun_core_instance() -> Generator[ZargunCore, None, None]:
-    with closing(ZargunCore()) as instance:
+    with ZargunCore() as instance:
         yield instance
 
 
@@ -30,7 +29,7 @@ def zargun_core_instance_with_data(zargun_core_instance: ZargunCore) -> ZargunCo
 
 
 def test_core_sqlite_exception() -> None:
-    with closing(ZargunCore()) as instance:
+    with ZargunCore() as instance:
         instance.load_data([{"field": "value"}], fields=[("field", str)])
         with pytest.raises(Exception):
             instance.execute_sqlite_query("THIS IS AN INVALID SQL")

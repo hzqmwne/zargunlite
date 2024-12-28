@@ -4,6 +4,7 @@ import sqlite3
 import string
 from collections.abc import Collection, Iterable, Mapping, Sequence
 from contextlib import closing
+from types import TracebackType
 from typing import Any
 
 from zargunlite.model import ZargunException, ZircoliteRule, ZircoliteRuleMatchResult
@@ -59,6 +60,15 @@ class ZargunCore:
 
     def close(self) -> None:
         self._db_connection.close()
+
+    def __enter__(self) -> "ZargunCore":  # TODO: when increase python require to >=3.11, we can use typing.Self
+        return self
+
+    def __exit__(
+        self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
+    ) -> None:
+        _ = exc_type, exc_value
+        self.close()
 
     def _execute_sql(self, sql: str, params: Mapping[str, object] | Sequence[object] = ()) -> list[sqlite3.Row]:
         with closing(self._db_connection.cursor()) as cursor:
