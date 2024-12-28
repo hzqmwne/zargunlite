@@ -51,7 +51,7 @@ class ZargunCore:
 
     def _create_table(self, field_defs: list[tuple[str, str]]) -> None:
         # FIXME: escape field
-        fields_part = ", ".join(f"'{field}' {typ}" for field, typ in field_defs) + ", "
+        fields_part = "".join(f"'{field}' {typ}, " for field, typ in field_defs)
         stmt = f"CREATE TABLE logs ( row_id INTEGER, {fields_part} PRIMARY KEY(row_id AUTOINCREMENT) );"
         self._execute_sql(stmt)
 
