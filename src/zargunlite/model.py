@@ -12,6 +12,10 @@ JSONTypeRO: TypeAlias = Mapping[str, "JSONTypeRO"] | Sequence["JSONTypeRO"] | JS
 # type JSONTypeRO = Mapping[str, "JSONTypeRO"] | Sequence["JSONTypeRO"] | JSONLiteralType
 
 
+class ZargunException(Exception):
+    pass
+
+
 @dataclasses.dataclass(slots=True, kw_only=True)
 class ZircoliteRule:
     title: str

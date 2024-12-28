@@ -1,11 +1,12 @@
 import os
 import re
 import sqlite3
+import string
 from collections.abc import Collection, Iterable, Mapping, Sequence
 from contextlib import closing
 from typing import Any
 
-from zargunlite.model import ZircoliteRule, ZircoliteRuleMatchResult
+from zargunlite.model import ZargunException, ZircoliteRule, ZircoliteRuleMatchResult
 
 
 def sqlite_udf_regexp(x: str, y: object | None) -> int:
@@ -15,6 +16,10 @@ def sqlite_udf_regexp(x: str, y: object | None) -> int:
         return 1
     else:
         return 0
+
+
+def strict_field_name_check(field_name: str) -> bool:
+    return all(c in string.ascii_letters + string.digits + "_" for c in field_name)
 
 
 class ZargunCore:
@@ -70,6 +75,7 @@ class ZargunCore:
         data: Collection[Mapping[str, Any]] | Iterable[Mapping[str, Any]],
         *,
         fields: Collection[tuple[str, type]] | None = None,
+        strict_field_name: bool = True,
     ) -> None:
         if not fields:
             assert isinstance(data, Collection)
@@ -79,6 +85,11 @@ class ZargunCore:
         else:
             # here, data can be any iterable object
             field_map = {k: t for k, t in fields}
+
+        if strict_field_name:
+            for field_name in field_map.keys():
+                if not strict_field_name_check(field_name):
+                    raise ZargunException(f"strict field name check failed: {field_name!r}")
 
         field_name_lower_seens: set[str] = set()
         field_define_list: list[tuple[str, str]] = []
