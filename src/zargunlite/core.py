@@ -22,6 +22,22 @@ def strict_field_name_check(field_name: str) -> bool:
     return all(c in string.ascii_letters + string.digits + "_" for c in field_name)
 
 
+def repr_to_sqlite_name_literal(s: str) -> str:
+    # FIXME: escape more special chars
+    return "`{}`".format(s.replace("`", "``"))
+
+
+def repr_to_sqlite_value_literal(v: object) -> str:
+    s = str(v)
+    if isinstance(v, int):
+        return s
+    safe_chars = string.digits + string.ascii_letters + string.punctuation + " "
+    if all(c in safe_chars for c in s):
+        return "'{}'".format(s.replace("'", "''"))
+    else:
+        return f"X'{s.encode().hex()}'"
+
+
 class ZargunCore:
     __slots__ = ("_db_location", "_db_connection", "_limit")
 
@@ -50,25 +66,22 @@ class ZargunCore:
             return r.fetchall()
 
     def _create_table(self, field_defs: list[tuple[str, str]]) -> None:
-        # FIXME: escape field
-        fields_part = "".join(f"'{field}' {typ}, " for field, typ in field_defs)
-        stmt = f"CREATE TABLE logs ( row_id INTEGER, {fields_part} PRIMARY KEY(row_id AUTOINCREMENT) );"
+        fields_part = "".join(f"{repr_to_sqlite_name_literal(field)} {typ}, " for field, typ in field_defs)
+        stmt = f"CREATE TABLE `logs` ( `row_id` INTEGER, {fields_part} PRIMARY KEY(row_id AUTOINCREMENT) );"
         self._execute_sql(stmt)
 
     def _insert_data_row(self, d: Mapping[str, Any]) -> None:
         column_define_list = []
-        value_define_list = []
+        value_list = []
         for k, v in d.items():
-            # FIXME: escape
-            column_define = f"'{k}'"
-            value_define = "'{}'".format(str(v).replace("'", "''"))
+            column_define = repr_to_sqlite_name_literal(k)
             column_define_list.append(column_define)
-            value_define_list.append(value_define)
+            value_list.append(v)
 
         columns_define = ", ".join(column_define_list)
-        values_define = ", ".join(value_define_list)
-        insert_stmt = f"INSERT INTO logs ({columns_define}) VALUES ({values_define});"
-        self._execute_sql(insert_stmt)
+        parameters_define = ", ".join("?" * len(value_list))
+        insert_stmt = f"INSERT INTO `logs` ({columns_define}) VALUES ({parameters_define});"
+        self._execute_sql(insert_stmt, value_list)
 
     def load_data(
         self,
@@ -101,7 +114,6 @@ class ZargunCore:
             field_name_lower_seens.add(field_name_lower)
 
             sql_type_define = "INTEGER" if issubclass(field_type, int) else "TEXT COLLATE NOCASE"
-            # FIXME: escape
             field_define = (field_name, sql_type_define)
             field_define_list.append(field_define)
         self._create_table(field_define_list)
@@ -110,8 +122,11 @@ class ZargunCore:
             self._insert_data_row(d)
 
     def create_index(self, field: str) -> None:
-        # FIXME: escape field
-        self._execute_sql(f'CREATE INDEX "idx_{field}" ON "logs" ("{field}");')
+        sql = "CREATE INDEX {} ON `logs` ({});".format(
+            repr_to_sqlite_name_literal(f"idx_{field}"),
+            repr_to_sqlite_name_literal(field),
+        )
+        self._execute_sql(sql)
 
     def execute_sqlite_query(self, sql: str) -> list[dict[str, Any]]:
         r = []
