@@ -22,6 +22,8 @@ def zargun_core_instance_with_data(zargun_core_instance: ZargunCore) -> ZargunCo
         {"category": "c4", "fieldD": 44},
         {"category": "c4", "fieldE": "000/abc/def/abc/ghi"},
         {"category": "c4", "fieldE": "111/abc/def/cba/ghi"},
+        {"category": "c5", "fieldF": "JKL"},
+        {"category": "c5", "fieldF": "jkl"},
     ]
     zargun_core_instance.load_data(data)
     zargun_core_instance.create_index("category")
@@ -38,6 +40,11 @@ def test_core_sqlite_exception() -> None:
 def test_core_sqlite_query_single(zargun_core_instance_with_data: ZargunCore) -> None:
     r = zargun_core_instance_with_data.execute_sqlite_query("SELECT * FROM logs WHERE fieldB = '22'")
     assert r == [{"row_id": 2, "category": "c2", "fieldB": 22, "fieldD": 44}]
+
+
+def test_core_sqlite_query_single_nocase_string(zargun_core_instance_with_data: ZargunCore) -> None:
+    r = zargun_core_instance_with_data.execute_sqlite_query("SELECT * FROM logs WHERE fieldF = 'Jkl'")
+    assert r == [{"row_id": 8, "category": "c5", "fieldF": "JKL"}, {"row_id": 9, "category": "c5", "fieldF": "jkl"}]
 
 
 def test_core_sqlite_query_like(zargun_core_instance_with_data: ZargunCore) -> None:
