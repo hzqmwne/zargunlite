@@ -90,7 +90,10 @@ class ZargunCore:
 
         columns_define = ", ".join(column_define_list)
         parameters_define = ", ".join("?" * len(value_list))
-        insert_stmt = f"INSERT INTO `logs` ({columns_define}) VALUES ({parameters_define});"
+        if column_define_list:
+            insert_stmt = f"INSERT INTO `logs` ({columns_define}) VALUES ({parameters_define});"
+        else:
+            insert_stmt = "INSERT INTO `logs` DEFAULT VALUES;"
         self._execute_sql(insert_stmt, value_list)
 
     def load_data(
